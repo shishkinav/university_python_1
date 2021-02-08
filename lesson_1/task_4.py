@@ -11,8 +11,8 @@ _number = input("Введите целое положительное число
 try:
     global value
     value = int(_number)
-except ValueError:
-    print("И это по Вашему целое положительное?")
+except Exception as err:
+    print(f"И это по Вашему целое положительное? Ошибка: {err}")
     sys.exit()
 
 _temp = len(_number)

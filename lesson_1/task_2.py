@@ -17,13 +17,13 @@ def get_attrs_time(seconds: int) -> List[int, ]:
     
 try:
     _time_for_user = int(input("Введите время в секундах для конвертации:\n"))
-    # _time_for_user = 87398
     seconds, minutes, hours, *other = get_attrs_time(_time_for_user)
     print("%(hours)02d:%(minutes)02d:%(seconds)02d" % {
         "hours": hours, "minutes": minutes, "seconds": seconds
     })
-except ValueError:
-    print("Введенное значение должно быть целым числом!")
+except Exception as err:
+    print("Введенное значение должно быть целым числом! "
+        f"Ошибка: {err}")
 
 
 """

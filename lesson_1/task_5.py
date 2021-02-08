@@ -16,10 +16,10 @@ global costs
 try:
     revenue = float(input("Введите сумму прибыли:\n"))
     costs = float(input("Введите сумму издержек:\n"))
-except ValueError:
+except Exception as err:
     print("Допустимо введение суммы, состоящей только из цифр "
         "+ возможно указать копейки через 'плавающую' точку. "
-        "example: 1234.99")
+        f"example: 1234.99\nОшибка: {err}")
     sys.exit()
 
 if revenue < costs:
@@ -35,8 +35,8 @@ else:
             print("В расчёте на одного сотрудника чистой прибыли получается:\n"
                 "%.2f рублей" % ((revenue - costs) / _count_worker))
             break
-        except ValueError:
-            print("Необходимо ввести целое положительное число!")
+        except Exception as err:
+            print(f"Необходимо ввести целое положительное число!\nОшибка: {err}")
 
 """
 Результат выполнения выглядит следующим образом:

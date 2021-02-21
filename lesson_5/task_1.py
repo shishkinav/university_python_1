@@ -3,7 +3,7 @@
 построчно данные, вводимые пользователем. Об окончании ввода 
 данных свидетельствует пустая строка.
 """
-with open('task_1_text.txt', 'w', encoding='utf-8') as file:
+with open('task_1_result.txt', 'w', encoding='utf-8') as file:
     while True:
         row_from_user = input("Введите строку для записи, "
                               "либо оставьте строку пустой для остановки:\n")

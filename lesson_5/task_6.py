@@ -14,3 +14,31 @@
 Пример словаря:
 {“Информатика”: 170, “Физика”: 40, “Физкультура”: 30}
 """
+import re
+from pprint import pprint
+
+try:
+    subjects: dict = {}
+    with open("task_6_text.txt") as fr:
+        for row in fr:
+            subject, trash = row.split(":")
+            hours = sum((float(_) \
+                for _ in re.findall('\d+', trash)))
+            if subjects.get(subject.capitalize()):
+                subjects[subject.capitalize()] += hours
+            else:
+                subjects.update({subject.capitalize(): hours})
+except Exception as err:
+    print(f"Ошибка: {err}")
+
+pprint(subjects)
+
+"""
+Результат выполнения:
+
+{'Английский': 57.0,
+ 'Информатика': 170.0,
+ 'Математика': 120.0,
+ 'Физика': 40.0,
+ 'Физкультура': 30.0}
+"""

@@ -12,3 +12,62 @@ color (цвет) и метод running (запуск). Атрибут реали
 Задачу можно усложнить, реализовав проверку порядка режимов, и при его 
 нарушении выводить соответствующее сообщение и завершать скрипт.
 """
+from itertools import cycle
+from time import sleep
+
+
+class TrafficLight:
+    """Класс светофор"""
+    __color: str = None
+    __count: int
+
+    def __init__(self, red: int = 7, yellow: int = 2,
+                 green: int = 7, count: int = 7) -> None:
+        """Инициализация экземпляра с возможность задать тайминги 
+        цветовой индикации и кол-во смен индикации"""
+        self.state: dict = {"красный": red,
+                            "желтый": yellow,
+                            "зеленый": green}
+        self.__count = count
+        if red <= 0 or yellow <= 0 or green <= 0:
+            raise ValueError('Таймер длительности для любого цвета '
+                             'не может быть меньше нуля!')
+
+    def change_color(self) -> str:
+        """Генератор автоматической смены цветовой индикации
+        в установленной очередности"""
+        for color in cycle(("красный", "желтый", "зеленый")):
+            self.__color = color
+            self.__count -= 1
+            yield
+
+    def running(self):
+        """Запуск светофора на благо общественности"""
+        for _ in self.change_color():
+            _timer = self.state[self.__color]
+            print(
+                f"На светофоре {self.__color} сигнал. Ждём {_timer} секунд(ы)")
+            sleep(_timer)
+            if not self.__count:
+                break
+
+
+if __name__ == '__main__':
+    try:
+        traffic = TrafficLight(count=7)
+        traffic.running()
+    except Exception as err:
+        print(f'Ошибка: {err}')
+
+"""
+Результат выполнения:
+
+> python task_1.py 
+На светофоре красный сигнал. Ждём 7 секунд(ы)
+На светофоре желтый сигнал. Ждём 2 секунд(ы)
+На светофоре зеленый сигнал. Ждём 7 секунд(ы)
+На светофоре красный сигнал. Ждём 7 секунд(ы)
+На светофоре желтый сигнал. Ждём 2 секунд(ы)
+На светофоре зеленый сигнал. Ждём 7 секунд(ы)
+На светофоре красный сигнал. Ждём 7 секунд(ы)
+"""

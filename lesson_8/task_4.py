@@ -15,7 +15,7 @@ from prettytable import PrettyTable
 class Equipment(ABC):
     is_broken = False
 
-    def __init__(self, maker: str, model: int, inv_number: str) -> None:
+    def __init__(self, maker: str, model: str, inv_number: str) -> None:
         self.type_obj = self.__class__.__name__
         self.manufacturer = maker
         self.model = model

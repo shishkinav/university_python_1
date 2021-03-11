@@ -14,3 +14,75 @@
     уроке знания: реализовать абстрактные классы для основных классов проекта, 
     проверить на практике работу декоратора @property.
 """
+from abc import ABC, abstractmethod
+
+
+class Clothes(ABC):
+    """Абстрактный класс Одежда, определяющий обязательный метод для
+    потомков и единое свойство для подсчёта общего расхода ткани"""
+    title: str = ''
+
+    @abstractmethod
+    def material_consumption(self):
+        """Метод в наследниках должен рассчитывать расход по
+        индивидуальной формуле для соответствующего типа одежды"""
+        pass
+
+    @property
+    def calculate(self):
+        """Обращайтесь к этому свойству из любого наследника для
+        получения результата подсчета общего расхода ткани"""
+        return self.material_consumption()
+
+    def __str__(self) -> str:
+        """Переопределяем отображение экземпляра класса при печати,
+        если title не задан, будет выведено название класса"""
+        text = self.title if self.title else self.__class__.__name__
+        return text.lower()
+
+
+class Coat(Clothes):
+    """Класс Пальто - определяет соответствующий тип одежды"""
+
+    def __init__(self, size: int) -> None:
+        """Инициализируем объект с указанием размера
+            IN: size - использовать размерность целочисленное 
+                значение (int); example: size=45"""
+        self.size = int(size)
+
+    def material_consumption(self):
+        return round(self.size / 6.5 + 0.5, 2)
+
+
+class Suit(Clothes):
+    """Класс Костюм - определяет соответствующий тип одежды"""
+    title = 'КоСтЮм'
+
+    def __init__(self, height: float) -> None:
+        """Инициализируем объект с указанием роста
+            IN: height - использовать размерность метр (float)
+                example: height=1.82"""
+        self.height = float(height)
+
+    def material_consumption(self):
+        return round(2 * self.height + 0.3, 2)
+
+
+if __name__ in '__main__':
+    try:
+        coat = Coat(size=45)
+        suit = Suit(height=1.82)
+        for obj in (coat, suit):
+            print(
+                f'Чтобы изготовить {obj} потребуется '
+                f'{obj.calculate} квадратных метров ткани.'
+            )
+    except Exception as err:
+        print(f'Ошибка: {err}')
+
+"""
+Результат выполенния:
+
+Чтобы изготовить coat потребуется 7.42 квадратных метров ткани.
+Чтобы изготовить костюм потребуется 3.94 квадратных метров ткани.
+"""

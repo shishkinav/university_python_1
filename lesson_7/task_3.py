@@ -36,3 +36,116 @@
 Подсказка: подробный список операторов для перегрузки доступен по 
     ссылке https://pythonworld.ru/osnovy/peregruzka-operatorov.html.
 """
+from functools import wraps
+from typing import Type
+
+
+def check_instance(method):
+    """Декоратор методов класса OrganicCell, проверяющий
+    чтобы передаваемых класс для арифметических действий
+    был такого же типа, что и исходный"""
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        if not isinstance(args[1], OrganicCell):
+            raise TypeError('Допустимо производить действия '
+                            'только с однотипными объектами. '
+                            f'{wrapper.__doc__}')
+        return method(*args, **kwargs)
+    return wrapper
+
+
+class OrganicCell:
+    """Класс органической клетки"""
+
+    def __init__(self, cell: int) -> None:
+        """Инициализация органической клетки с указанием
+        количества содержащихся в ней изначально ячеек"""
+        self.cell = cell
+
+    @check_instance
+    def __add__(self, other) -> object:
+        """Переопределение метода сложения двух клеток"""
+        return OrganicCell(self.cell + other.cell)
+
+    @check_instance
+    def __sub__(self, other) -> object:
+        """Переопределение метода вычитания двух клеток.
+        Разность количества ячеек двух однотипных клеток 
+        должна быть больше нуля, либо действие не будет
+        выполнено."""
+        if self.cell < other.cell:
+            raise AssertionError("У исходной клетки недостаточно ячеек.")
+        return OrganicCell(self.cell - other.cell)
+
+    @check_instance
+    def __mul__(self, other) -> object:
+        """Переопределение метода умножения двух клеток.
+        Разность количества ячеек двух однотипных клеток 
+        должна быть больше нуля, либо действие не будет
+        выполнено."""
+        return OrganicCell(self.cell * other.cell)
+
+    @check_instance
+    def __truediv__(self, other) -> object:
+        """Переопределение метода вычитания двух клеток.
+        Разность количества ячеек двух однотипных клеток 
+        должна быть больше нуля, либо действие не будет
+        выполнено."""
+        if not other.cell:
+            raise ZeroDivisionError(
+                "Клетка-делитель уже не содержит активных ячеек")
+        return OrganicCell(self.cell // other.cell)
+
+    def make_order(self, count_row) -> str:
+        """Метод организации ячеек органической клетки по рядам"""
+        _count = self.cell // count_row
+        _remnant = self.cell % count_row
+        return '\n'.join([*['*' * count_row for _ in range(_count)], '*' * _remnant])
+
+    def __str__(self) -> str:
+        """Перегрузка метода. При печати класса будет использован
+        метод организации ячеек с дефолтным кол-вом 5 в ряду"""
+        return self.make_order(count_row=5)
+
+
+if __name__ in '__main__':
+    try:
+        org_cell_1 = OrganicCell(cell=11)
+        org_cell_2 = OrganicCell(cell=9)
+        print(f'Сложение двух органических клеток:\n{org_cell_1 + org_cell_2}')
+        print(f'Разность двух органических клеток:\n{org_cell_1 - org_cell_2}')
+        print(
+            f'Умножение двух органических клеток:\n{(org_cell_1 * org_cell_2).make_order(count_row=20)}')
+        print(f'Деление двух органических клеток:\n{org_cell_1 / org_cell_2}')
+        from abc import ABC
+        a = ABC()
+        org_cell_1 - a
+        print('Проверка недопустимого вычитания из меньшего большего:')
+        org_cell_2 - org_cell_1
+    except Exception as err:
+        print(f'Ошибка: {err}')
+
+"""
+Результат выполнения:
+
+Сложение двух органических клеток:
+*****
+*****
+*****
+*****
+
+Разность двух органических клеток:
+**
+Умножение двух органических клеток:
+********************
+********************
+********************
+********************
+*******************
+Деление двух органических клеток:
+*
+Ошибка: Допустимо производить действия только с однотипными объектами. Переопределение метода вычитания двух клеток.
+        Разность количества ячеек двух однотипных клеток 
+        должна быть больше нуля, либо действие не будет
+        выполнено.
+"""
